@@ -16,7 +16,8 @@ os.makedirs(DATABASE_DIR, exist_ok=True)
 
 def create_sample_database(year, month, day):
     """Create a sample database with test data"""
-    date_dir = os.path.join(DATABASE_DIR, str(year), str(month), str(day), 'refdata')
+    date = datetime(year, month, day)
+    date_dir = os.path.join(DATABASE_DIR, date.strftime('%Y'), date.strftime('%m'), date.strftime('%d'), 'refdata')
     os.makedirs(date_dir, exist_ok=True)
     db_path = os.path.join(date_dir, 'refdata.db')
     
@@ -120,8 +121,9 @@ def get_database_hierarchy():
     return hierarchy
 
 def get_database_path(year, month, day):
-    """Get database path for a specific date"""
-    return os.path.join(DATABASE_DIR, str(year), str(month), str(day), 'refdata', 'refdata.db')
+    """Get the path to a database based on date"""
+    date = datetime(year, month, day)
+    return os.path.join(DATABASE_DIR, date.strftime('%Y'), date.strftime('%m'), date.strftime('%d'), 'refdata', 'refdata.db')
 
 def get_databases():
     """Get list of all SQLite databases in the database directory"""
@@ -218,4 +220,6 @@ def execute_query():
     return jsonify(result)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002)
+    # For production, use gunicorn or another production WSGI server
+    # This is just for local development
+    app.run(host='0.0.0.0', port=5002, debug=False)
