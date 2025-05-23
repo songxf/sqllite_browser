@@ -61,21 +61,35 @@
     <script>
         let currentDb = null;
 
+        // Helper functions for date selection
+        function parseDateFromDb(db) {
+            const parts = db.split('/');
+            return {
+                year: parts[0],
+                month: parts[1],
+                day: parts[2]
+            };
+        }
+
         // Update tables when database changes
         document.getElementById('databaseSelect').addEventListener('change', function() {
-            currentDb = this.value;
-            loadTables(currentDb);
+            const db = this.value;
+            const date = parseDateFromDb(db);
+            loadTables(date.year, date.month, date.day);
         });
 
         // Load tables for initially selected database
         window.onload = function() {
             const select = document.getElementById('databaseSelect');
-            currentDb = select.value;
-            loadTables(currentDb);
+            const db = select.value;
+            if (db) {
+                const date = parseDateFromDb(db);
+                loadTables(date.year, date.month, date.day);
+            }
         };
 
-        function loadTables(db) {
-            fetch(`/tables?db=${db}`)
+        function loadTables(year, month, day) {
+            fetch(`/tables/${year}/${month}/${day}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -96,7 +110,7 @@
                                     <tr>
                                         <td>${table}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary" onclick="viewTableData('${db}', '${table}')">
+                                            <button class="btn btn-sm btn-primary" onclick="viewTableData('${year}', '${month}', '${day}', '${table}')">
                                                 View
                                             </button>
                                         </td>
@@ -109,8 +123,8 @@
                 .catch(error => showError(error));
         }
 
-        function viewTableData(db, table) {
-            fetch(`/table/${table}?db=${db}`)
+        function viewTableData(year, month, day, table) {
+            fetch(`/table/${table}/${year}/${month}/${day}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -129,13 +143,24 @@
                 return;
             }
             
+            const select = document.getElementById('databaseSelect');
+            const db = select.value;
+            if (!db) {
+                showError('Please select a database first');
+                return;
+            }
+            
+            const date = parseDateFromDb(db);
+            
             fetch('/execute', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    db: currentDb,
+                    year: date.year,
+                    month: date.month,
+                    day: date.day,
                     sql: sql
                 })
             })
