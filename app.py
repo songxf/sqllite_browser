@@ -12,7 +12,7 @@ app = Flask(__name__)
 DATABASE_DIR = os.getenv('DATABASE_DIR', '/Users/xsong/Documents/examples/sqllite_browser/databases')
 
 # Ensure database directory exists
-os.makedirs(DATABASE_DIR, exist_ok=True)
+# os.makedirs(DATABASE_DIR, exist_ok=True)
 
 def create_sample_database(year, month, day):
     """Create a sample database with test data"""

@@ -199,38 +199,33 @@
                         <ul class="pagination">
                             ${page > 1 ? `
                                 <li class="page-item">
-                                    <a class="page-link" href="#" onclick="viewTableData(
-                                        '${window.tablePagination.year}', 
-                                        '${window.tablePagination.month}', 
-                                        '${window.tablePagination.day}', 
-                                        '${window.tablePagination.table}', 
+                                    <a class="page-link" onclick="event.preventDefault(); viewTableData(
+                                        '${window.tablePagination.year}',
+                                        '${window.tablePagination.month}',
+                                        '${window.tablePagination.day}',
+                                        '${window.tablePagination.table}',
                                         ${page - 1}
                                     )">Previous</a>
                                 </li>
                             ` : ''}
-                            
-                            ${Array.from({length: totalPages}, (_, i) => {
-                                const pageNum = i + 1;
-                                return `
-                                    <li class="page-item ${pageNum === page ? 'active' : ''}">
-                                        <a class="page-link" href="#" onclick="viewTableData(
-                                            '${window.tablePagination.year}', 
-                                            '${window.tablePagination.month}', 
-                                            '${window.tablePagination.day}', 
-                                            '${window.tablePagination.table}', 
-                                            ${pageNum}
-                                        )">${pageNum}</a>
-                                    </li>
-                                `;
-                            }).join('')}
-                            
+                            ${Array.from({length: totalPages}, (_, i) => i + 1).map(p => `
+                                <li class="page-item ${p === page ? 'active' : ''}">
+                                    <a class="page-link" onclick="event.preventDefault(); viewTableData(
+                                        '${window.tablePagination.year}',
+                                        '${window.tablePagination.month}',
+                                        '${window.tablePagination.day}',
+                                        '${window.tablePagination.table}',
+                                        ${p}
+                                    )">${p}</a>
+                                </li>
+                            `).join('')}
                             ${page < totalPages ? `
                                 <li class="page-item">
-                                    <a class="page-link" href="#" onclick="viewTableData(
-                                        '${window.tablePagination.year}', 
-                                        '${window.tablePagination.month}', 
-                                        '${window.tablePagination.day}', 
-                                        '${window.tablePagination.table}', 
+                                    <a class="page-link" onclick="event.preventDefault(); viewTableData(
+                                        '${window.tablePagination.year}',
+                                        '${window.tablePagination.month}',
+                                        '${window.tablePagination.day}',
+                                        '${window.tablePagination.table}',
                                         ${page + 1}
                                     )">Next</a>
                                 </li>
